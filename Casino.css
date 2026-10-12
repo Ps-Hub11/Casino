@@ -34,8 +34,8 @@ body {
 /* Roulette-Rad und Zahlen */
 #wheel {
     position: relative;
-    width: 500px;
-    height: 500px;
+    width: min(500px, calc(100vw - 24px));
+    aspect-ratio: 1;
     margin: 0 auto;
     overflow: hidden;
     border-radius: 50%;
@@ -52,8 +52,8 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 500px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
 }
 
 .numbers {
@@ -70,10 +70,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: clamp(18px, 6vw, 30px);
+    height: clamp(18px, 6vw, 30px);
     color: white;
-    font-size: 16px;
+    font-size: clamp(10px, 3.2vw, 16px);
     font-weight: bold;
     text-shadow: 0 1px 2px black;
     transform: translate(-50%, -50%);
@@ -84,8 +84,8 @@ body {
     top: 50%;
     left: 50%;
     z-index: 1;
-    width: 16px;
-    height: 16px;
+    width: clamp(10px, 3.2vw, 16px);
+    height: clamp(10px, 3.2vw, 16px);
     border: 1px solid #ddd;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, white 0 20%, #ddd 45%, #888 100%);
@@ -108,12 +108,14 @@ body {
     grid-column: 2;
     grid-row: 1;
     position: relative;
-    --cell-size: 56px;
-    --number-row-height: 48px;
+    --cell-size: clamp(15px, calc((100vw - 100px) / 14), 56px);
+    --number-row-height: clamp(24px, calc(var(--cell-size) * 0.86), 48px);
+    --bet-row-height: clamp(27px, calc(var(--cell-size) * 0.75), 42px);
+    --table-gap: clamp(2px, 1vw, 4px);
     display: grid;
     grid-template-columns: repeat(13, var(--cell-size)) var(--cell-size);
-    grid-template-rows: repeat(3, var(--number-row-height)) 42px 42px;
-    gap: 4px;
+    grid-template-rows: repeat(3, var(--number-row-height)) repeat(2, var(--bet-row-height));
+    gap: var(--table-gap);
     width: max-content;
     max-width: calc(100vw - 24px);
     overflow-x: auto;
@@ -128,7 +130,7 @@ body {
     grid-auto-flow: column;
     grid-template-columns: repeat(13, var(--cell-size));
     grid-template-rows: repeat(3, var(--number-row-height));
-    gap: 4px;
+    gap: var(--table-gap);
     grid-column: 1 / 14;
     grid-row: 1 / 4;
     font-size: 1.2em;
@@ -204,7 +206,7 @@ body {
 
 .bet-row {
     display: grid;
-    gap: 4px;
+    gap: var(--table-gap);
 }
 
 .bet-row button {
@@ -215,7 +217,7 @@ body {
     color: white;
     background-color: transparent;
     cursor: pointer;
-    font-size: 0.95em;
+    font-size: clamp(8px, calc(var(--cell-size) * 0.24), 15px);
     font-weight: bold;
     transition: background-color 0.15s;
 }
@@ -356,33 +358,30 @@ body {
 
 .bet-chip {
     display: grid;
-    flex: 0 0 20px;
+    flex: 0 0 clamp(10px, calc(var(--cell-size) * 0.36), 20px);
     place-items: center;
-    width: 20px;
-    height: 20px;
+    width: clamp(10px, calc(var(--cell-size) * 0.36), 20px);
+    height: clamp(10px, calc(var(--cell-size) * 0.36), 20px);
     border: 2px solid white;
     border-radius: 50%;
     background: #222;
     color: white;
-    font-size: 7px;
+    font-size: clamp(5px, calc(var(--cell-size) * 0.12), 7px);
     font-weight: bold;
     pointer-events: none;
 }
 
-/* Darstellung auf kleinen Bildschirmen */
 @media (max-width: 600px) {
     #roulette-table {
-        --cell-size: 44px;
-        --number-row-height: 42px;
+        --cell-size: clamp(16px, calc((100vw - 70px) / 14), 56px);
+        --table-gap: 2px;
     }
 
-    .number {
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
+    #Zahlen {
+        font-size: clamp(0.75em, calc(var(--cell-size) * 0.34), 1.2em);
     }
-
 }
+
 #Zahlen > .Zahlen.ausgewählt,
 #Zahlen > .Zahlen.ausgewählt:hover,
 #Zahlen > .Zahlen.wetten-vorschau,
@@ -395,7 +394,7 @@ body {
 
 #Geld{
     position: absolute;
-    top: 5px;
+    top: 55px;
     right: 5px;
     font-size: 24px;
     font-weight: bold;
@@ -487,6 +486,11 @@ body {
 
 #LosingScreen h1 {
     font-size: clamp(36px, 8vw, 64px);
+}
+
+#gesamtGewinn {
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: bold;
 }
 
 #Gewinn {

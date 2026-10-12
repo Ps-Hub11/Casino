@@ -16,10 +16,12 @@ const ausgewaehlteElemente = document.querySelectorAll(
    const chips = document.querySelectorAll(".bet-chip");
    const Gewinn = document.getElementById("Gewinn");
    const LosingScreen = document.getElementById("LosingScreen");
+   const gesamtGewinnAnzeige = document.getElementById("gesamtGewinn");
 
 
-let kontostand = 10000;
-let selectedCoin = null;
+   let kontostand = 10000;
+   let gesamtGewonnen = 0;
+   let selectedCoin = null;
 let gewinnTimer;
 Geld.textContent = `Geld: ${kontostand}€`;
 LosingScreen.style.display = "none";
@@ -122,8 +124,8 @@ function createNumber(number, index) {
 
     element.classList.add("number");
     element.textContent = number;
-    element.style.left = `${point.x}px`;
-    element.style.top = `${point.y}px`;
+    element.style.left = `${point.x / 500 * 100}%`;
+    element.style.top = `${point.y / 500 * 100}%`;
 
     numbersContainer.appendChild(element);
 }
@@ -223,8 +225,8 @@ let wheelAngle = 0;
 let ballAngle = 0;
 const ballRadius = 165;
 
-ball.style.left = `${center}px`;
-ball.style.top = `${center - ballRadius}px`;
+ball.style.left = `${center / 500 * 100}%`;
+ball.style.top = `${(center - ballRadius) / 500 * 100}%`;
 
 function spin() {
     if (submitBtn.disabled) {
@@ -276,8 +278,10 @@ function spin() {
         rotatingWheel.style.transform = `rotate(${wheelAngle}deg)`;
 
         const radians = (ballAngle - 90) * Math.PI / 180;
-        ball.style.left = `${center + ballRadius * Math.cos(radians)}px`;
-        ball.style.top = `${center + ballRadius * Math.sin(radians)}px`;
+        ball.style.left =
+            `${(center + ballRadius * Math.cos(radians)) / 500 * 100}%`;
+        ball.style.top =
+            `${(center + ballRadius * Math.sin(radians)) / 500 * 100}%`;
 
         if (progress < 1) {
             requestAnimationFrame(animateSpin);
@@ -288,8 +292,11 @@ function spin() {
             number.classList.remove("ausgewählt");
         });
         const auszahlung = berechneAuszahlung(winningNumber);
+        gesamtGewonnen += auszahlung;
         zeigeSpielergebnis(winningNumber, auszahlung);
         if (auszahlung === 0 && kontostand === 0) {
+            gesamtGewinnAnzeige.textContent =
+                `Gesamte Auszahlung: ${gesamtGewonnen}€`;
             LosingScreen.style.display = "flex";
         }
 
@@ -438,6 +445,8 @@ document.getElementById("closeLosingScreen").addEventListener("click", () => {
 
 document.getElementById("resetBtn").addEventListener("click", () => {
     kontostand = 10000;
+    gesamtGewonnen = 0;
+    gesamtGewinnAnzeige.textContent = "Gesamte Auszahlung: 0€";
     Geld.textContent = `Geld: ${kontostand}€`;
     selectedCoin = null;
     coins.forEach((coin) => {
